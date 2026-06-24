@@ -44,8 +44,6 @@ authRouter.post(
 authRouter.post(
   "/login",
   async (req: Request<unknown, unknown, LoginUserDTO>, res: Response) => {
-    // Treba proveriti req.body, treba proveriti da li su email i sifra tacni, treba izdati novi jwt
-
     const credentials = loginUserSchema.parse(req.body);
 
     const user = await prisma.user.findUnique({

@@ -48,7 +48,7 @@ const AuthLayout = () => {
             <div className="flex items-start gap-3">
               {/* icon */}
               <div className="flex shrink-0 justify-center items-center p-2.5 rounded-xl bg-indigo-500/15 border border-indigo-500/20">
-                <LuPencilLine className="stroke-[1.5] w-7 h-7 text-indigo-600" />
+                <LuPencilLine className="stroke-[1.5] w-6 h-6 text-indigo-600" />
               </div>
               <div>
                 <h3 className="text-base text-white font-semibold">
@@ -62,7 +62,7 @@ const AuthLayout = () => {
             <div className="flex items-start gap-3">
               {/* icon */}
               <div className="flex shrink-0 justify-center items-center p-2.5 rounded-xl bg-indigo-500/15 border border-indigo-500/20">
-                <LuUsers className="stroke-[1.5] w-7 h-7 text-indigo-600" />
+                <LuUsers className="stroke-[1.5] w-6 h-6 text-indigo-600" />
               </div>
               <div>
                 <h3 className="text-base text-white font-semibold">
@@ -76,7 +76,7 @@ const AuthLayout = () => {
             <div className="flex items-start gap-3">
               {/* icon */}
               <div className="flex shrink-0 justify-center items-center p-2.5 rounded-xl bg-indigo-500/15 border border-indigo-500/20">
-                <LuBookmark className="stroke-[1.5] w-7 h-7 text-indigo-600" />
+                <LuBookmark className="stroke-[1.5] w-6 h-6 text-indigo-600" />
               </div>
               <div>
                 <h3 className="text-base text-white font-semibold">

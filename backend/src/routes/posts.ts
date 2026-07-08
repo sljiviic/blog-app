@@ -11,16 +11,28 @@ import { generateUniqueSlug } from "../services/slug.service";
 
 const postsRouter = Router();
 
-// Svi postovi sa izbrojanim lajkovima i komentarima
-postsRouter.get("/", async (_req: Request, res: Response) => {
-  const posts = await prisma.post.findMany({
+// Svi postovi sa izbrojanim lajkovima i komentarima i sa sortiranjem
+postsRouter.get("/", async (req: Request, res: Response) => {
+  const sortBy = req.query.sortBy || "newest";
+
+  const queryOptions: any = {
     where: { published: true },
     include: {
       _count: {
         select: { likes: true, comments: true },
       },
     },
-  });
+  };
+
+  if (sortBy === "newest") {
+    queryOptions.orderBy = {
+      createdAt: "desc",
+    };
+  } else if (sortBy === "popular") {
+    queryOptions.orderBy = { likes: { _count: "desc" } };
+  }
+
+  const posts = await prisma.post.findMany(queryOptions);
 
   res.status(200).json(posts);
 });

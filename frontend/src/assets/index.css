@@ -1,1 +1,31 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+
+@theme {
+  /* ── Brend ─────────────────────────────────────── */
+  --color-primary: var(
+    --color-indigo-600
+  ); /* linkovi, akcenti, aktivan tab, primarno dugme */
+  --color-primary-hover: var(
+    --color-indigo-700
+  ); /* hover / pressed / disabled */
+  --color-primary-accent: var(
+    --color-indigo-500
+  ); /* translucentne pozadine, ivice, gradijenti (/15, /20…) */
+
+  /* ── Tekst ─────────────────────────────────────── */
+  --color-heading: var(
+    --color-gray-900
+  ); /* naslovi + glavni tekst na svetloj podlozi */
+  --color-muted: var(--color-gray-500); /* sekundarni tekst, ikone inputa */
+  --color-subtle: var(--color-gray-400); /* najtiši tekst, napomene */
+
+  /* ── Status ────────────────────────────────────── */
+  --color-danger: var(--color-red-500); /* poruke o grešci */
+  --color-danger-hover: var(--color-red-600); /* poruke o grešci hover */
+
+  /* ── Površine i ivice ──────────────────────────── */
+  --color-background: #f6f7f9; /* pozadina strane (neutralno siva) */
+  --color-surface: var(--color-white); /* kartice, panely */
+  --color-border: var(--color-gray-200); /* ivice + tihe pozadinske ispune */
+  --color-border-strong: var(--color-gray-300); /* ring inputa */
+}

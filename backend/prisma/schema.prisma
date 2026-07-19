@@ -18,6 +18,7 @@ model User {
   lastName String
   email String @unique
   passwordHash String
+  profileImage String
   posts Post[]
   likedPosts Like[]
   savedPosts Save[]
@@ -28,21 +29,21 @@ model Post {
   id Int @id @default(autoincrement())
   slug String @unique
   title String
-  content String?
-  published Boolean @default(false)
+  content String
+  coverImage String @default("")
   createdAt DateTime @default(now())
   likes Like[]
   saves Save[]
   comments Comment[]
-
+  
   author User @relation(fields: [authorId], references: [id])
   authorId Int
 }
 
 model Like {
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  post Post @relation(fields: [postId], references: [id])
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId Int
   createdAt DateTime @default(now())
 
@@ -50,9 +51,9 @@ model Like {
 }
 
 model Save {
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  post Post @relation(fields: [postId], references: [id])
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId Int
 
   @@id([userId, postId])
@@ -60,9 +61,9 @@ model Save {
 
 model Comment {
   id Int @id @default(autoincrement())
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  post Post @relation(fields: [postId], references: [id])
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId Int
 
   comment String

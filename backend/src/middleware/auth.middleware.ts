@@ -32,3 +32,24 @@ export const authenticateJWT = (
     next(error);
   }
 };
+
+export const optionalJWT = (
+  req: Request,
+  _res: Response,
+  next: NextFunction,
+): void => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader && authHeader.startsWith("Bearer ") && !req.user) {
+    const token = authHeader.split(" ")[1];
+
+    try {
+      req.user = verifyToken(token);
+    } catch {
+      // Opciona autentikacija: nevalidan/istekao token samo znaci
+      // "nije ulogovan" — ne rusi zahtev, nastavi kao anoniman.
+    }
+  }
+
+  next();
+};

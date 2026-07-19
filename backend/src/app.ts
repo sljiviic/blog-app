@@ -3,16 +3,18 @@ import authRouter from "./routes/auth";
 import errorHandler from "./middleware/error.middleware";
 import cors from "cors";
 import postsRouter from "./routes/posts";
+import usersRouter from "./routes/users";
 
 const app = express();
 
-// APP MIDDLEWAERS
+// APP MIDDLEWARES
 app.use(express.json());
 app.use(cors());
 
 // PUBLIC ROUTE HANDLERS
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postsRouter);
+app.use("/api/users", usersRouter);
 
 // ERROR HANDLING MIDDLEWARE
 app.use(errorHandler);

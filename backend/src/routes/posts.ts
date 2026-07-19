@@ -1,6 +1,7 @@
 import { Router, Response, Request } from "express";
 import { prisma } from "../lib/prisma";
-import { authenticateJWT } from "../middleware/auth.middleware";
+import { Prisma } from "../../generated/prisma/client";
+import { authenticateJWT, optionalJWT } from "../middleware/auth.middleware";
 import {
   CommentPostDTO,
   commentPostSchema,
@@ -12,37 +13,61 @@ import { generateUniqueSlug } from "../services/slug.service";
 const postsRouter = Router();
 
 // Svi postovi sa izbrojanim lajkovima i komentarima i sa sortiranjem
-postsRouter.get("/", async (req: Request, res: Response) => {
+postsRouter.get("/", optionalJWT, async (req: Request, res: Response) => {
   const sortBy = req.query.sortBy || "newest";
+  const user = req.user;
 
-  const queryOptions: any = {
-    where: { published: true },
+  const orderBy: Prisma.PostOrderByWithRelationInput =
+    sortBy === "popular"
+      ? { likes: { _count: "desc" } }
+      : { createdAt: "desc" };
+
+  const posts = await prisma.post.findMany({
+    orderBy,
     include: {
       _count: {
         select: { likes: true, comments: true },
       },
+      author: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          profileImage: true,
+        },
+      },
+      likes: {
+        where: { userId: user?.userId ?? -1 },
+        select: { postId: true },
+      },
+      saves: {
+        where: { userId: user?.userId ?? -1 },
+        select: { postId: true },
+      },
     },
-  };
+  });
 
-  if (sortBy === "newest") {
-    queryOptions.orderBy = {
-      createdAt: "desc",
-    };
-  } else if (sortBy === "popular") {
-    queryOptions.orderBy = { likes: { _count: "desc" } };
-  }
+  const result = posts.map(({ likes, saves, ...post }) => ({
+    ...post,
+    isOwner: user?.userId === post.author.id,
+    isLiked: likes.length > 0,
+    isSaved: saves.length > 0,
+  }));
 
-  const posts = await prisma.post.findMany(queryOptions);
-
-  res.status(200).json(posts);
+  res.status(200).json(result);
 });
 
-// Jedan pretrazeni post
+// Pretrazeni postovi
 postsRouter.get("/search", async (req: Request, res: Response) => {
   const title = req.query.title;
 
   if (typeof title !== "string") {
     res.status(400).json({ error: "Title query param is required." });
+    return;
+  }
+
+  if (title.trim() === "") {
+    res.status(200).json([]);
     return;
   }
 
@@ -61,8 +86,10 @@ postsRouter.get("/search", async (req: Request, res: Response) => {
 // Jedan post preko sluga
 postsRouter.get(
   "/:slug",
+  optionalJWT,
   async (req: Request<{ slug: string }>, res: Response) => {
     const slug = req.params.slug;
+    const user = req.user;
 
     const post = await prisma.post.findUnique({
       where: { slug: slug },
@@ -70,12 +97,41 @@ postsRouter.get(
         _count: {
           select: { likes: true },
         },
-        comments: { select: { comment: true } },
+        comments: {
+          include: {
+            user: {
+              select: { firstName: true, lastName: true, profileImage: true },
+            },
+          },
+        },
+        author: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            profileImage: true,
+          },
+        },
+        likes: {
+          where: { userId: user?.userId ?? -1 },
+          select: { postId: true },
+        },
+        saves: {
+          where: { userId: user?.userId ?? -1 },
+          select: { postId: true },
+        },
       },
     });
 
     if (post) {
-      res.status(200).json(post);
+      const result = {
+        ...post,
+        isOwner: user?.userId === post.author.id,
+        isLiked: post.likes.length > 0,
+        isSaved: post.saves.length > 0,
+      };
+
+      res.status(200).json(result);
       return;
     } else {
       res.status(404).json({ error: "Post not found" });
@@ -91,7 +147,7 @@ postsRouter.post(
     const parsedData = upsertPostSchema.parse(req.body);
     const user = req.user!;
 
-    const { title, content, published } = parsedData;
+    const { title, content } = parsedData;
     const slug = await generateUniqueSlug(title);
 
     const newPost = await prisma.post.create({
@@ -99,7 +155,7 @@ postsRouter.post(
         title,
         slug,
         content,
-        published,
+        coverImage: parsedData.coverImage ?? "",
         authorId: user.userId,
       },
     });
@@ -120,7 +176,7 @@ postsRouter.put(
     const user = req.user!;
     const postId = Number(req.params.postId);
 
-    const { title, content, published } = parsedData;
+    const { title, content } = parsedData;
 
     const updatedPost = await prisma.post.update({
       where: {
@@ -130,7 +186,9 @@ postsRouter.put(
       data: {
         title,
         content,
-        published,
+        ...(parsedData.coverImage !== undefined && {
+          coverImage: parsedData.coverImage,
+        }),
       },
     });
 
@@ -146,17 +204,14 @@ postsRouter.delete(
     const user = req.user!;
     const postId = Number(req.params.postId);
 
-    const deletedPost = await prisma.post.delete({
+    await prisma.post.delete({
       where: {
         id: postId,
         authorId: user.userId,
       },
-      select: {
-        title: true,
-      },
     });
 
-    res.status(204).json(deletedPost);
+    res.status(204).end();
   },
 );
 
@@ -168,11 +223,10 @@ postsRouter.post(
     const user = req.user!;
     const postId = Number(req.params.postId);
 
-    const newLike = await prisma.like.create({
-      data: {
-        postId: postId,
-        userId: user.userId,
-      },
+    const newLike = await prisma.like.upsert({
+      where: { userId_postId: { userId: user.userId, postId: postId } },
+      create: { postId: postId, userId: user.userId },
+      update: {},
     });
 
     res.status(201).json(newLike);
@@ -187,12 +241,10 @@ postsRouter.delete(
     const user = req.user!;
     const postId = Number(req.params.postId);
 
-    await prisma.like.delete({
+    await prisma.like.deleteMany({
       where: {
-        userId_postId: {
-          userId: user.userId,
-          postId: postId,
-        },
+        postId: postId,
+        userId: user.userId,
       },
     });
 
@@ -208,11 +260,10 @@ postsRouter.post(
     const user = req.user!;
     const postId = Number(req.params.postId);
 
-    const newSave = await prisma.save.create({
-      data: {
-        postId: postId,
-        userId: user.userId,
-      },
+    const newSave = await prisma.save.upsert({
+      where: { userId_postId: { userId: user.userId, postId: postId } },
+      create: { postId: postId, userId: user.userId },
+      update: {},
     });
 
     res.status(201).json(newSave);
@@ -227,12 +278,10 @@ postsRouter.delete(
     const user = req.user!;
     const postId = Number(req.params.postId);
 
-    await prisma.save.delete({
+    await prisma.save.deleteMany({
       where: {
-        userId_postId: {
-          userId: user.userId,
-          postId: postId,
-        },
+        postId: postId,
+        userId: user.userId,
       },
     });
 

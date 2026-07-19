@@ -28,6 +28,7 @@ authRouter.post(
         lastName,
         email,
         passwordHash: hashedPassword,
+        profileImage: "",
       },
     });
 

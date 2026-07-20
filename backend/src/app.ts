@@ -11,6 +11,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// HEALTH CHECK
+app.get("/", (_req, res) => {
+  res.json({ status: "ok" });
+});
+
 // PUBLIC ROUTE HANDLERS
 app.use("/api/auth", authRouter);
 app.use("/api/posts", postsRouter);

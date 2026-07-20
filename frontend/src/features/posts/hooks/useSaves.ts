@@ -44,9 +44,9 @@ export const useToggleSaveMutation = () => {
       queryClient.invalidateQueries({
         predicate: (query) => matchesPostLists(query.queryKey),
       });
-      // osvezi profilnu statistiku (svoju i tudju, ako je otvorena)
+      // refresh profile stats (own or someone else's, if open)
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      // osvezi detaljnu stranu ako je otvorena
+      // refresh the detail page if it's open
       queryClient.invalidateQueries({ queryKey: ["posts", "detail"] });
     },
   });

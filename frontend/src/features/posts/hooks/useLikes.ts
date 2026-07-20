@@ -15,17 +15,17 @@ export const useToggleLikeMutation = () => {
         : likesService.createLike(postId),
 
     onMutate: async ({ postId, isLiked }) => {
-      // zaustavi refetch-ove u letu da ne pregaze nas optimisticki upis
+      // cancel in-flight refetches so they don't overwrite our optimistic write
       await queryClient.cancelQueries({
         predicate: (query) => matchesPostLists(query.queryKey),
       });
 
-      // snimi trenutno stanje svih list kesova za rollback
+      // snapshot every list cache so we can roll back
       const previous = queryClient.getQueriesData<PostsType>({
         predicate: (query) => matchesPostLists(query.queryKey),
       });
 
-      // odmah preokreni isLiked + broj lajkova za taj post
+      // flip isLiked and the like count right away
       queryClient.setQueriesData<PostsType>(
         { predicate: (query) => matchesPostLists(query.queryKey) },
         (old) =>
@@ -47,20 +47,20 @@ export const useToggleLikeMutation = () => {
     },
 
     onError: (_err, _vars, context) => {
-      // vrati sve na staro ako zahtev pukne
+      // put everything back if the request fails
       context?.previous.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data);
       });
     },
 
     onSettled: () => {
-      // sinhronizuj sa serverom (tacan broj, redosled...)
+      // sync with the server (exact count, ordering...)
       queryClient.invalidateQueries({
         predicate: (query) => matchesPostLists(query.queryKey),
       });
-      // osvezi profilnu statistiku (svoju i tudju, ako je otvorena)
+      // refresh profile stats (own or someone else's, if open)
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      // osvezi detaljnu stranu ako je otvorena
+      // refresh the detail page if it's open
       queryClient.invalidateQueries({ queryKey: ["posts", "detail"] });
     },
   });

@@ -99,7 +99,7 @@ const UpsertPostModal = ({ onClose, post }: UpsertPostProps) => {
             className="font-medium"
           />
 
-          {/* Cover slika */}
+          {/* Cover image */}
           <div>
             <label className="block text-sm font-semibold text-heading mb-2">
               Cover image (optional)

@@ -14,11 +14,11 @@ describe("matchesPostLists", () => {
   });
 
   it("ignores caches that do not hold an array of posts", () => {
-    // profil je objekat — optimisticki update radi .map() pa bi pukao
+    // the profile is an object — the optimistic update calls .map() and would blow up
     expect(matchesPostLists(["users", "me"])).toBe(false);
     expect(matchesPostLists(["users", 5])).toBe(false);
 
-    // pretraga i detalj imaju drugaciji oblik
+    // search and detail have a different shape
     expect(matchesPostLists(["posts", "search", "react"])).toBe(false);
     expect(matchesPostLists(["posts", "detail", "some-slug"])).toBe(false);
   });

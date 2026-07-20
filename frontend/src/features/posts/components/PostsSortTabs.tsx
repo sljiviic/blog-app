@@ -10,7 +10,7 @@ const PostsSortTabs = ({ sortBy, setSortBy }: PostsSortTabsProps) => {
   return (
     <div className="flex justify-start items-center w-full h-14 px-4 py-2 shadow-md/5 border border-border bg-surface rounded-lg">
       <div className="relative grid grid-cols-2 gap-4 h-full">
-        {/* aktivni highlight (iza dugmadi) */}
+        {/* active highlight (behind the buttons) */}
         <div
           className={`absolute left-0 bg-primary/5 w-[calc(50%-0.5rem)] h-full pointer-events-none rounded-lg transition-transform duration-200 ease-in-out ${sortBy === "newest" ? "translate-x-0" : "translate-x-[calc(100%+1rem)]"}`}
         ></div>

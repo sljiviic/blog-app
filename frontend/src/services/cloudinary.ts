@@ -15,7 +15,7 @@ const upload = async (file: File, transform: string): Promise<string> => {
   formData.append("file", file);
   formData.append("upload_preset", UPLOAD_PRESET);
 
-  // fetch umesto axios instance — drugi host, bez naseg Bearer tokena
+  // fetch instead of our axios instance — different host, no Bearer token
   const response = await fetch(
     `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
     { method: "POST", body: formData },

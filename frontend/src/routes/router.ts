@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
       { path: "posts/:slug", Component: PostDetail },
       { path: "users/:userId", Component: UserProfile },
       {
-        // rute koje zahtevaju prijavu
+        // routes that require a login
         Component: RequireAuth,
         children: [
           { path: "profile", Component: Profile },

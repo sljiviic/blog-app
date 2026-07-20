@@ -34,13 +34,13 @@ const Header = () => {
           <Logo />
         </Link>
 
-        {/* Desktop: inline pretraga */}
+        {/* Desktop: inline search */}
         <div className="hidden lg:flex flex-1 justify-center">
           <PostSearch />
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          {/* Mobilni: dugme koje otvara search modal */}
+          {/* Mobile: button that opens the search modal */}
           <button
             type="button"
             onClick={() => setIsSearchOpen(true)}

@@ -15,7 +15,7 @@ export const userProfileSchema = z.object({
 
 export type UserProfile = z.infer<typeof userProfileSchema>;
 
-// Bez email-a i broja sacuvanih postova — to je privatno
+// No email or saved count — that's private
 export const publicUserProfileSchema = z.object({
   id: z.number(),
   firstName: z.string(),

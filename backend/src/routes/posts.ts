@@ -12,7 +12,7 @@ import { generateUniqueSlug } from "../services/slug.service";
 
 const postsRouter = Router();
 
-// Svi postovi sa izbrojanim lajkovima i komentarima i sa sortiranjem
+// All posts with like/comment counts, sorted
 postsRouter.get("/", optionalJWT, async (req: Request, res: Response) => {
   const sortBy = req.query.sortBy || "newest";
   const user = req.user;
@@ -57,7 +57,7 @@ postsRouter.get("/", optionalJWT, async (req: Request, res: Response) => {
   res.status(200).json(result);
 });
 
-// Pretrazeni postovi
+// Search results
 postsRouter.get("/search", async (req: Request, res: Response) => {
   const title = req.query.title;
 
@@ -83,7 +83,7 @@ postsRouter.get("/search", async (req: Request, res: Response) => {
   res.status(200).json(posts);
 });
 
-// Jedan post preko sluga
+// Single post by slug
 postsRouter.get(
   "/:slug",
   optionalJWT,
@@ -139,7 +139,7 @@ postsRouter.get(
   },
 );
 
-// Kreiranje jednog posta
+// Create a post
 postsRouter.post(
   "/",
   authenticateJWT,
@@ -164,7 +164,7 @@ postsRouter.post(
   },
 );
 
-// Azuriranje jednog posta
+// Update a post
 postsRouter.put(
   "/:postId",
   authenticateJWT,
@@ -196,7 +196,7 @@ postsRouter.put(
   },
 );
 
-// Brisanje jednog posta
+// Delete a post
 postsRouter.delete(
   "/:postId",
   authenticateJWT,
@@ -215,7 +215,7 @@ postsRouter.delete(
   },
 );
 
-// Kreiranje lajka
+// Like a post
 postsRouter.post(
   "/:postId/like",
   authenticateJWT,
@@ -233,7 +233,7 @@ postsRouter.post(
   },
 );
 
-// Uklanjanje lajka
+// Unlike a post
 postsRouter.delete(
   "/:postId/like",
   authenticateJWT,
@@ -252,7 +252,7 @@ postsRouter.delete(
   },
 );
 
-// Kreiranje sejva
+// Save a post
 postsRouter.post(
   "/:postId/save",
   authenticateJWT,
@@ -270,7 +270,7 @@ postsRouter.post(
   },
 );
 
-// Uklanjanje sejva
+// Unsave a post
 postsRouter.delete(
   "/:postId/save",
   authenticateJWT,
@@ -289,7 +289,7 @@ postsRouter.delete(
   },
 );
 
-// Kreiranje komentara
+// Add a comment
 postsRouter.post(
   "/:postId/comment",
   authenticateJWT,
@@ -315,7 +315,7 @@ postsRouter.post(
   },
 );
 
-// Brisanje komentara
+// Delete a comment
 postsRouter.delete(
   "/:postId/comment",
   authenticateJWT,

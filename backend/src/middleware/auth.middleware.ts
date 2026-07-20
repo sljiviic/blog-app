@@ -46,8 +46,8 @@ export const optionalJWT = (
     try {
       req.user = verifyToken(token);
     } catch {
-      // Opciona autentikacija: nevalidan/istekao token samo znaci
-      // "nije ulogovan" — ne rusi zahtev, nastavi kao anoniman.
+      // Optional auth: an invalid/expired token just means "not logged in" —
+      // don't fail the request, carry on as anonymous.
     }
   }
 

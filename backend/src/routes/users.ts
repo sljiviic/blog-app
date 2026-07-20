@@ -5,7 +5,7 @@ import { updateUserSchema, UpdateUserDTO } from "../types/users";
 
 const usersRouter = Router();
 
-// Vraca post u istom obliku kao GET /posts
+// Returns a post in the same shape as GET /posts
 const postInclude = (userId: number) => ({
   _count: {
     select: { likes: true, comments: true },
@@ -28,7 +28,7 @@ const postInclude = (userId: number) => ({
   },
 });
 
-// Profil ulogovanog korisnika sa statistikom
+// Signed-in user's profile with stats
 usersRouter.get("/me", authenticateJWT, async (req: Request, res: Response) => {
   const userId = req.user!.userId;
 
@@ -67,7 +67,7 @@ usersRouter.get("/me", authenticateJWT, async (req: Request, res: Response) => {
   });
 });
 
-// Azuriranje profila ulogovanog korisnika
+// Update the signed-in user's profile
 usersRouter.put(
   "/me",
   authenticateJWT,
@@ -95,7 +95,7 @@ usersRouter.put(
   },
 );
 
-// Postovi ulogovanog korisnika
+// Signed-in user's posts
 usersRouter.get(
   "/me/posts",
   authenticateJWT,
@@ -119,7 +119,7 @@ usersRouter.get(
   },
 );
 
-// Sacuvani postovi ulogovanog korisnika
+// Signed-in user's saved posts
 usersRouter.get(
   "/me/saved",
   authenticateJWT,
@@ -150,9 +150,9 @@ usersRouter.get(
   },
 );
 
-// "/:userId" rute moraju ici posle svih "/me" ruta, inace bi "/me" upalo ovde.
+// "/:userId" routes have to come after all the "/me" ones, otherwise "/me" lands here.
 
-// Javni profil korisnika
+// Public user profile
 usersRouter.get(
   "/:userId",
   async (req: Request<{ userId: string }>, res: Response) => {
@@ -195,7 +195,7 @@ usersRouter.get(
   },
 );
 
-// Postovi korisnika
+// A user's posts
 usersRouter.get(
   "/:userId/posts",
   optionalJWT,

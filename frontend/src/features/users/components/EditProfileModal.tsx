@@ -26,7 +26,7 @@ const EditProfileModal = ({ onClose }: EditProfileModalProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  // sve dok korisnik ne uploaduje novu, prikazuje se ona sa profila
+  // until the user uploads a new one, show whatever is on the profile
   const imageUrl = uploadedImage ?? profile?.profileImage ?? "";
 
   const {
@@ -78,7 +78,7 @@ const EditProfileModal = ({ onClose }: EditProfileModalProps) => {
           onSubmit={handleSubmit(onSubmit)}
           className="mt-6 flex flex-col gap-5"
         >
-          {/* Fotografija */}
+          {/* Photo */}
           <div className="flex items-center gap-4">
             <div className="relative">
               <Avatar profileImage={imageUrl} fullName={fullName} size="xl" />
@@ -111,7 +111,7 @@ const EditProfileModal = ({ onClose }: EditProfileModalProps) => {
             </div>
           </div>
 
-          {/* Ime / prezime */}
+          {/* Name */}
           <div className="flex gap-3">
             <Input
               type="text"

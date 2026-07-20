@@ -17,8 +17,8 @@ const modalSize: Record<ModalSize, string> = {
 };
 
 const Modal = ({ onClose, size = "lg", children }: ModalProps) => {
-  // Portal: roditelj sa position:fixed pravi svoj stacking context, pa bi
-  // modal inace ostao ispod sadrzaja stranice uprkos z-50.
+  // Portal: a position:fixed parent creates its own stacking context, so the
+  // modal would otherwise sit under the page content despite z-50.
   return createPortal(
     <div
       onClick={onClose}

@@ -60,7 +60,7 @@ const PostDetail = () => {
   const handleComment = () => requireAuth(() => setIsCommentModalOpen(true));
 
   return (
-    <div className="flex flex-col gap-6 py-6 max-w-3xl mx-auto">
+    <div className="flex flex-col gap-6 px-4 py-6 sm:px-6 max-w-3xl mx-auto">
       <Link
         to="/"
         className="flex items-center gap-2 text-sm font-semibold text-muted hover:text-heading transition-colors w-fit"

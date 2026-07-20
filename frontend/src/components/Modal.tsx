@@ -22,7 +22,7 @@ const Modal = ({ onClose, size = "lg", children }: ModalProps) => {
   return createPortal(
     <div
       onClick={onClose}
-      className="fixed top-0 left-0 w-screen h-screen bg-black/5 backdrop-blur-xs flex justify-center items-center z-50"
+      className="fixed top-0 left-0 w-screen h-screen bg-black/5 backdrop-blur-xs flex justify-center items-center p-4 z-50"
     >
       <div
         onClick={(e) => e.stopPropagation()}

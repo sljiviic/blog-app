@@ -1,4 +1,4 @@
-import Spinner from "@/components/Spinner";
+import LoadingState from "@/components/LoadingState";
 import ErrorState from "@/components/ErrorState";
 import Avatar from "@/components/Avatar";
 import CommentList from "@/features/posts/components/CommentList";
@@ -28,11 +28,7 @@ const PostDetail = () => {
   const { requireAuth } = useAuth();
 
   if (isPending) {
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (isError || !post) {

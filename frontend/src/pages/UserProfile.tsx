@@ -1,4 +1,5 @@
 import Spinner from "@/components/Spinner";
+import LoadingState from "@/components/LoadingState";
 import ErrorState from "@/components/ErrorState";
 import EmptyState from "@/components/EmptyState";
 import { LuFileText } from "react-icons/lu";
@@ -18,11 +19,7 @@ const UserProfile = () => {
   const postsQuery = useUserPostsQuery(id);
 
   if (isPending) {
-    return (
-      <div className="flex justify-center py-20">
-        <Spinner />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (isError || !profile) {

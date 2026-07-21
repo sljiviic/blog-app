@@ -5,7 +5,7 @@ import { usePostsQuery } from "@/features/posts/hooks/usePosts";
 import { useState } from "react";
 import PostsSortTabs from "@/features/posts/components/PostsSortTabs";
 import { useMyProfileQuery } from "@/features/users/hooks/useUsers";
-import Spinner from "@/components/Spinner";
+import LoadingState from "@/components/LoadingState";
 import ErrorState from "@/components/ErrorState";
 import EmptyState from "@/components/EmptyState";
 import { LuFileText } from "react-icons/lu";
@@ -23,11 +23,7 @@ const Home = () => {
   const { isPending, isError, data, refetch } = usePostsQuery(sortBy);
 
   if (isPending) {
-    return (
-      <div className="flex justify-center items-center py-20">
-        <Spinner />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (isError) {
